@@ -10,4 +10,6 @@ module com.promeme {
     opens com.promeme.view to javafx.fxml;
     exports com.promeme.controller;
     opens com.promeme.controller to javafx.fxml;
+    exports com.promeme;
+    opens com.promeme to javafx.fxml;
 }

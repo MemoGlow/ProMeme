@@ -1,25 +1,31 @@
 package com.promeme.model;
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import org.w3c.dom.Text;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
 public class EditableImage {
-    private Image image;
-    String description;
-    ArrayList<EditableText> texts;
-    Image toImage(){
-        AnchorPane imageHolder = new AnchorPane();
-        int idx = 0;
-        for(EditableText text : texts){
-            imageHolder.setTopAnchor(text, text.getLayoutY());
-            imageHolder.setLeftAnchor(text, text.getLayoutX());
-        }
-        WritableImage writableImage = imageHolder.snapshot(null,null);
-        return writableImage;
+    private Image baseImage;
+    private ArrayList<Text> texts;
+
+    public EditableImage(){
+        texts = new ArrayList<Text>();
+    }
+    public Image getBaseImage() {
+        return baseImage;
+    }
+
+    public void setBaseImage(Image baseImage) {
+        this.baseImage = baseImage;
+    }
+
+    public ArrayList<Text> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(ArrayList<Text> texts) {
+        this.texts = texts;
     }
 }
