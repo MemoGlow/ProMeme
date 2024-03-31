@@ -7,5 +7,5 @@ public class EditableText extends Text {
     public void changeTextSize(double scale){
         this.setFont(new Font(this.getFont().getFamily(), this.getFont().getSize() * scale));
     }
-
 }
+    

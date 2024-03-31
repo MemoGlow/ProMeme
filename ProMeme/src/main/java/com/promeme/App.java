@@ -18,12 +18,15 @@ import java.awt.*;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("editable-image-view.fxml"));
+        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("library-view.fxml"));
+//        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("editable-image-view.fxml"));
         Parent root = fxml.load();
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.show();
+
+
 //        AnchorPane layout = new AnchorPane();
 //        Text text = new Text("Hello world");
 //        text.setFont(new Font("Times New Roman", 150));
