@@ -1,6 +1,7 @@
 package com.promeme.controller;
 
 import com.promeme.model.EditableImage;
+import com.promeme.view.EditableImageView;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -12,15 +13,25 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class EditableImageController {
 
     private EditableImage editableImage;
+    private EditableImageView editableImageView;
+    public EditableImageController(EditableImageView editableImageView){
+        this.editableImageView = editableImageView;
+        editableImage = new EditableImage();
+    }
+
+    public EditableImageView getEditableImageView() {
+        return editableImageView;
+    }
+
+    public void setEditableImageView(EditableImageView editableImageView) {
+        this.editableImageView = editableImageView;
+    }
 
     public EditableImage getEditableImage() {
         return editableImage;
@@ -36,33 +47,40 @@ public class EditableImageController {
     public EditableImageController(EditableImage editableImage){
         this.editableImage = editableImage;
     }
-    public void setBaseImage(Image image){
-        editableImage.setBaseImage(image);
+    public void setEditableImage(){
+        editableImage.setBaseImage(editableImageView.getImage());
+        double scale = editableImageView.getScale();
+        editableImage.setTexts(new ArrayList<Text>());
+        for(Text text : editableImageView.getTexts()){
+            System.out.println("editable image add");
+            Text editableImageText = new Text();
+            editableImageText.setFont(new Font(text.getFont().getFamily(), text.getFont().getSize() / scale));
+            editableImageText.setFill(text.getFill());
+            editableImageText.setX(text.getX() / scale);
+            editableImageText.setY(text.getY() / scale);
+            editableImage.getTexts().add(editableImageText);
+            editableImageText.setText(text.getText());
+            System.out.println(editableImageText);
+        }
     }
-    public void addText(Text text, double scale){
-        System.out.println(scale);
-        Text outputText = new Text(text.getText());
-        double size = text.getFont().getSize() / scale;
-        outputText.setFont(new Font(text.getFont().getFamily(), size));
-        outputText.setX(text.getX() /  scale);
-        outputText.setY(text.getY() / scale);
-        editableImage.getTexts().add(outputText);
-    }
-    public void export(File file, ArrayList<Text> texts, double scale) throws IOException {
+    public void export(File file) throws IOException {
+        setEditableImage();
         AnchorPane pane = new AnchorPane();
         pane.getChildren().add(new ImageView(editableImage.getBaseImage()));
-        for(Text text : texts){
-            addText(text, scale);
-        }
         for(Text text : editableImage.getTexts()){
             pane.getChildren().add(text);
         }
-        System.out.println(editableImage.getTexts().size());
         WritableImage exportImage = pane.snapshot(null, null);
         ImageIO.write(SwingFXUtils.fromFXImage(exportImage, null), "png", file);
     }
     public void open(File file) throws FileNotFoundException {
         editableImage.setBaseImage(new Image(new FileInputStream(file)));
+    }
+    public void save(File file) throws IOException {
+        setEditableImage();
+        ObjectOutputStream ous = new ObjectOutputStream(new FileOutputStream(file));
+        ous.writeObject(editableImage);
+        ous.close();
     }
 
 }
