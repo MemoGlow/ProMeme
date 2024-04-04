@@ -1,6 +1,7 @@
 package com.promeme;
 
 import com.promeme.model.EditableImage;
+import com.promeme.model.EditableText;
 import com.promeme.view.EditableImageView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,34 +9,81 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.swing.text.AttributeSet;
 import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
 
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("library-view.fxml"));
-//        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("editable-image-view.fxml"));
+//        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("library-view.fxml"));
+        FXMLLoader fxml = new FXMLLoader(EditableImageView.class.getResource("editable-image-view.fxml"));
         Parent root = fxml.load();
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.show();
 
+//        EditableImage editableImage = new EditableImage();
+//        editableImage.setImagePath("C:\\Users\\MemoGlow\\AppData\\Roaming\\Microsoft\\Windows\\Network Shortcuts\\hehe.png");
+//        EditableText text = new EditableText();
+//        text.setText("Hello");
+//        text.setFont(new Font(100));
+//        text.setFill(Color.RED);
+//        editableImage.getTexts().add(text);
+//        ObjectOutputStream ous = new ObjectOutputStream(new FileOutputStream(new File("sample")));
+//        System.out.println(editableImage.getImagePath());
+//        System.out.println(editableImage.getTexts().size());
+//        System.out.println(editableImage.getTexts().get(0));
 
-//        AnchorPane layout = new AnchorPane();
-//        Text text = new Text("Hello world");
-//        text.setFont(new Font("Times New Roman", 150));
-//        text.setLayoutX(50);
-//        text.setLayoutY(300);
-//        layout.getChildren().add(text);
-//        Stage stage = new Stage();
-//        stage.setScene(new Scene(layout));
-//        stage.show();
+//        ous.writeObject(editableImage);
+//        ous.close();
+//        editableImage = null;
+//        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File("sample")));
+//        editableImage = (EditableImage) ois.readObject();
+//        System.out.println(editableImage.getImagePath());
+//        System.out.println(editableImage.getTexts().size());
+//        System.out.println(editableImage.getTexts().get(0));
+//        ois.close();
+//        EditableText text = new EditableText();
+//        text.setText("Hello ");
+//        ObjectOutputStream ous = new ObjectOutputStream(new FileOutputStream("sample"));
+//        text.setX(23.5);
+//        ous.writeObject(text);
+//        System.out.println(text);
+//        text = null;
+//        ous.close();
+//        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("sample"));
+//        text = (EditableText) ois.readObject();
+//        System.out.println(text);
+//        System.out.println();
+
+
+
+//        ArrayList<EditableText> texts = new ArrayList<EditableText>();
+//        EditableText textToAdd = new EditableText();
+//        textToAdd.setText("Hell world");
+//        texts.add(textToAdd);
+//        EditableImage editableImage =  new EditableImage();
+////        editableImage.setImagePath();
+//        editableImage.setTexts(texts);
+//        System.out.println(editableImage.getTexts().get(0));
+//        ObjectOutputStream ous = new ObjectOutputStream(new FileOutputStream("sample"));
+//        ous.writeObject(editableImage);
+//        ous.close();
+//
+//        editableImage = null;
+//        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("sample"));
+//        editableImage = (EditableImage) ois.readObject();
+//        System.out.println(editableImage.getTexts().get(0));
+//        System.out.println(editableImage);
     }
 
     public static void main(String[] args) {

@@ -6,41 +6,29 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 public class EditableImage implements Serializable {
-    private Image baseImage;
-    private ArrayList<Text> texts;
+    private String imagePath;
+    private ArrayList<EditableText> texts;
 
     public EditableImage(){
-        texts = new ArrayList<Text>();
+        texts = new ArrayList<EditableText>();
     }
-    public Image getBaseImage() {
-        return baseImage;
-    }
-
-    public void setBaseImage(Image baseImage) {
-        this.baseImage = baseImage;
+    public String getImagePath() throws FileNotFoundException {
+        return imagePath;
     }
 
-    public ArrayList<Text> getTexts() {
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public ArrayList<EditableText> getTexts() {
         return texts;
     }
 
-    public void setTexts(ArrayList<Text> texts) {
+    public void setTexts(ArrayList<EditableText> texts) {
         this.texts = texts;
-    }
-    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-        s.defaultReadObject();
-        baseImage = SwingFXUtils.toFXImage(ImageIO.read(s), null);
-    }
-
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        s.defaultWriteObject();
-        ImageIO.write(SwingFXUtils.fromFXImage(baseImage, null), "png", s);
     }
 }

@@ -1,23 +1,19 @@
 package com.promeme.view;
 
 import com.promeme.controller.EditableImageController;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.promeme.model.EditableText;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -29,14 +25,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class EditableImageView {
+    public final int EDIT = 3;
+    public final int NORMAL = 1;
+    public final int ADD = 2;
+//    public final int
     private Text currentText;
-    private ArrayList<Text> texts;
+    private ArrayList<EditableText> texts;
 
-    public ArrayList<Text> getTexts() {
+    public ArrayList<EditableText> getTexts() {
         return texts;
     }
 
-    public void setTexts(ArrayList<Text> texts) {
+    public void setTexts(ArrayList<EditableText> texts) {
         this.texts = texts;
     }
     private Image image;
@@ -82,13 +82,15 @@ public class EditableImageView {
     ComboBox<String> fontFamilyMenu;
 
     @FXML
-    public void setOnOpenButton() throws FileNotFoundException {
+    public void setOnOpenFromImageButton() throws FileNotFoundException {
 
         FileChooser fileChooser = new FileChooser();
-        image = new Image(new FileInputStream(fileChooser.showOpenDialog(null)));
-        open(image);
+        File file = fileChooser.showOpenDialog(null);
+        image = new Image(new FileInputStream(file));
+        editableImageController.getEditableImage().setImagePath(file.getPath());
+        loadImage(image);
     }
-    public void open(Image image){
+    public void loadImage(Image image){
         while (imageHolder.getChildren().size() > 0) {
             setOnUndoButton(new ActionEvent());
         }
@@ -102,6 +104,40 @@ public class EditableImageView {
         scaleField.setText(String.valueOf(imageView.getFitWidth() * 100 / imageView.getImage().getWidth()));
 
         imageHolder.getChildren().add(imageView);
+    }
+    public void loadProject() throws FileNotFoundException {
+        while (imageHolder.getChildren().size() > 0) {
+            imageHolder.getChildren().remove(imageHolder.getChildren().size() - 1);
+        }
+        this.image = new Image(new FileInputStream(new File(editableImageController.getEditableImage().getImagePath())));
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(centerPane.getHeight());
+        imageView.setFitWidth(centerPane.getWidth());
+        imageHolder.getChildren().add(imageView);
+
+        scale = imageView.getFitWidth() / imageView.getImage().getWidth();
+        System.out.println(scale);
+        scaleField.setText(String.valueOf(imageView.getFitWidth() * 100 / imageView.getImage().getWidth()));
+        for(EditableText text : editableImageController.getEditableImage().getTexts()){
+            EditableText textToAdd = new EditableText();
+            textToAdd.setFont(new Font(text.getFont().getFamily(), text.getFont().getSize() * scale));
+            textToAdd.setFill(text.getFill());
+            textToAdd.setText(text.getText());
+            textToAdd.setX(text.getX() * scale);
+            textToAdd.setY(text.getY() * scale);
+            textToAdd.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if(mode == EDIT){
+                        currentText = textToAdd;
+                        textToAdd.setX(event.getX());
+                        textToAdd.setY(event.getY());
+                    }
+                }
+            });
+            imageHolder.getChildren().add(textToAdd);
+        }
     }
 
     @FXML
@@ -134,22 +170,21 @@ public class EditableImageView {
         mode = 1;
         modeLabel.setText("Mode: View");
         // Khởi tạo các thuộc tính còn lại
-        System.out.println("texts initalize");
-        texts = new ArrayList<Text>();
+        texts = new ArrayList<EditableText>();
         editableImageController = new EditableImageController(this);
 
     }
 
     @FXML
     void setOnChangeModeButtton(ActionEvent event) {
-        if (mode == 1) {
-            mode = 2;
+        if (mode == NORMAL) {
+            setMode(ADD);
             modeLabel.setText("Mode: Add");
-        } else if (mode == 2) {
-            mode = 3;
+        } else if (mode == ADD) {
+            setMode(EDIT);
             modeLabel.setText("Mode: Edit");
-        } else if (mode == 3) {
-            mode = 1;
+        } else if (mode == EDIT) {
+            setMode(NORMAL);
             modeLabel.setText("Mode: View");
             currentText = null;
         }
@@ -157,8 +192,8 @@ public class EditableImageView {
 
     @FXML
     void setOnImageHolderClicked(MouseEvent event) {
-        if (mode == 2) {
-            Text text = new Text();
+        if (mode == ADD) {
+            EditableText text = new EditableText();
             text.setX(event.getX());
             text.setY(event.getY());
             updateText(text);
@@ -167,7 +202,7 @@ public class EditableImageView {
             text.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    if (mode == 3) {
+                    if (mode == EDIT) {
                         currentText = text;
                         content.setText(text.getText());
                         sizeField.setText(String.valueOf(text.getFont().getSize()));
@@ -177,7 +212,7 @@ public class EditableImageView {
             text.setOnMouseDragged(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    if(mode == 3){
+                    if(mode == EDIT){
                         currentText = text;
                         text.setX(event.getX());
                         text.setY(event.getY());
@@ -185,7 +220,7 @@ public class EditableImageView {
                 }
             });
             currentText = text;
-            mode = 3;
+            setMode(EDIT);
             modeLabel.setText("Mode: Edit");
         }
     }
@@ -229,11 +264,9 @@ public class EditableImageView {
                     break;
             }
         }
-        System.out.println(fontFamilyMenu.getValue() + " " + size);
-
         text.setText(content.getText());
-
         sizeField.setText(String.valueOf(size));
+        System.out.println(text);
     }
 
     @FXML
@@ -256,15 +289,14 @@ public class EditableImageView {
 
     @FXML
     void setOnContentTyped(KeyEvent event) {
-        if (mode == 3) {
-            System.out.println("content typed");
+        if (mode == EDIT) {
             currentText.setText(content.getText());
         }
     }
 
     @FXML
     void setOnFontSizeTyped(KeyEvent event) {
-        if(mode == 3){
+        if(mode == EDIT){
             String sizeValue = null;
             if (event.getCode() == KeyCode.ENTER) {
                 sizeValue = new String(sizeField.getText());
@@ -289,14 +321,13 @@ public class EditableImageView {
     }
     @FXML
     void setOnFontChange(){
-        if(mode == 3){
-            System.out.println(1);
+        if(mode == EDIT){
             updateText(currentText);
         }
     }
     @FXML
     void setOnColorChange(){
-        if(mode == 3){
+        if(mode == EDIT){
             updateText(currentText);
         }
     }
@@ -305,7 +336,7 @@ public class EditableImageView {
         double size = Double.parseDouble(sizeField.getText());
         size++;
         sizeField.setText(String.valueOf(size));
-        if(mode == 3){
+        if(mode == EDIT){
             updateText(currentText);
         }
     }
@@ -318,23 +349,30 @@ public class EditableImageView {
             size = 12;
         }
         sizeField.setText(String.valueOf(size));
-        if(mode == 3){
+        if(mode == EDIT){
             updateText(currentText);
         }
     }
     @FXML
     public void setOnSaveButton() throws IOException {
         File file = new FileChooser().showSaveDialog(null);
-        editableImageController.save(file);
+        editableImageController.saveToProjectFile(file);
+    }
+    @FXML
+    void setOnOpenFromProjectButton(ActionEvent event) throws IOException, ClassNotFoundException {
+        File file = new FileChooser().showOpenDialog(null);
+        editableImageController.openFromProjectFile(file);
+        System.out.println(editableImageController.getEditableImage().getTexts().get(0));
+        loadProject();
     }
     void setMode(int mode){
-        if(mode == 1){
+        if(mode == NORMAL){
             this.mode = mode;
             modeLabel.setText("Mode: Normal");
-        }else if(mode == 2){
+        }else if(mode == ADD){
             this.mode = mode;
             modeLabel.setText("Mode: Select location");
-        }else if(mode == 3){
+        }else if(mode == EDIT){
             this.mode = mode;
             modeLabel.setText("Mode: Edit text");
         }

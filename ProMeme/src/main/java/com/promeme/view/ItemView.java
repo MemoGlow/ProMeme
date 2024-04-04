@@ -46,6 +46,6 @@ public class ItemView {
         stage.setScene(scene);
         stage.show();
 
-        editableImageView.open(imageView.getImage());
+        editableImageView.loadImage(imageView.getImage());
     }
 }

@@ -105,7 +105,12 @@
                <menus>
                   <Menu mnemonicParsing="false" text="File">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#setOnOpenButton" text="Open" />
+                        <Menu mnemonicParsing="false" text="Open">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#setOnOpenFromProjectButton" text="Project" />
+                              <MenuItem mnemonicParsing="false" onAction="#setOnOpenFromImageButton" text="From image" />
+                          </items>
+                        </Menu>
                         <MenuItem mnemonicParsing="false" onAction="#setOnSaveButton" text="Save" />
                         <MenuItem mnemonicParsing="false" onAction="#setOnExportButton" text="Export" />
                      </items>
