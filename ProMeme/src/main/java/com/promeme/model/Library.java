@@ -4,17 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Library {
-    private ArrayList<File> images;
+    private ArrayList<File> directories;
 
     public Library(){
-        images = new ArrayList<File>();
+        directories = new ArrayList<File>();
     }
 
-    public ArrayList<File> getImages() {
-        return images;
+    public ArrayList<File> getDirectories() {
+        return directories;
     }
 
-    public void setImages(ArrayList<File> images) {
-        this.images = images;
+    public void setDirectories(ArrayList<File> directories) {
+        this.directories = directories;
     }
 }

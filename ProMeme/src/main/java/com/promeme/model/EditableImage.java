@@ -31,4 +31,8 @@ public class EditableImage implements Serializable {
     public void setTexts(EditableTextList texts) {
         this.texts = texts;
     }
+    public void writeObject(ObjectOutputStream ous) throws IOException {
+        ous.writeObject(imagePath);
+        ous.writeObject(texts);
+    }
 }

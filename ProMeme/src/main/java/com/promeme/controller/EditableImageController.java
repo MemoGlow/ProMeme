@@ -3,7 +3,6 @@ package com.promeme.controller;
 import com.promeme.model.EditableImage;
 import com.promeme.model.EditableText;
 import com.promeme.model.EditableTextList;
-import com.promeme.ulti.PreviewPane;
 import com.promeme.view.EditableImageView;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -11,11 +10,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 public class EditableImageController {
 
@@ -47,7 +45,6 @@ public class EditableImageController {
         loadEditableImage();
 
         AnchorPane pane = new AnchorPane();
-        System.out.println(editableImage.getTexts().size());
         pane.getChildren().add(new ImageView(new Image(new FileInputStream(new File(editableImage.getImagePath())))));
         for(EditableText text : editableImage.getTexts()){
             pane.getChildren().add(text);

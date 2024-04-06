@@ -8,6 +8,4 @@ public class EditableTextController {
     public EditableTextController(EditableText editableText) {
         this.editableText = editableText;
     }
-
-
 }

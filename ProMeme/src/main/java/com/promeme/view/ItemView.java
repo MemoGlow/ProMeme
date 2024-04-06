@@ -9,9 +9,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 
 public class ItemView {
+    private String imagePath;
     @FXML
     VBox imageHolder;
 
@@ -25,11 +31,10 @@ public class ItemView {
 
     @FXML
     ImageView imageView;
-    public void setData(Image image){
-        imageView.setImage(image);
-//        imageView.setPreserveRatio(true);
-//        imageView.setFitWidth(imageHolder.getWidth());
-//        imageView.setFitHeight(imageHolder.getHeight());
+    public void setData(File file) throws FileNotFoundException, MalformedURLException {
+
+        imagePath = new String(file.getPath());
+        imageView.setImage(new Image(Path.of(imagePath).toUri().toURL().toExternalForm(), 200, 0, true, true, true));
     }
     @FXML
     public void setOnClicked() throws IOException {
@@ -46,6 +51,6 @@ public class ItemView {
         stage.setScene(scene);
         stage.show();
 
-        editableImageView.loadImage(imageView.getImage());
+        editableImageView.loadImage(new File(imagePath));
     }
 }

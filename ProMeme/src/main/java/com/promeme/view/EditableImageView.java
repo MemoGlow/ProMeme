@@ -5,6 +5,8 @@ import com.promeme.model.EditableText;
 import com.promeme.model.EditableTextList;
 import com.promeme.ulti.DraggableMaker;
 import com.promeme.ulti.PaneScaler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,10 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -50,7 +49,8 @@ public class EditableImageView {
         return image;
     }
 
-
+    @FXML
+    HBox alignBox;
     @FXML
     ComboBox<String> colorMenu;
 
@@ -64,7 +64,7 @@ public class EditableImageView {
     @FXML
     private TextField scaleField;
     @FXML
-    ScrollPane centerPane;
+    AnchorPane centerPane;
     @FXML
     BorderPane pane;
     private double scale;
@@ -91,12 +91,16 @@ public class EditableImageView {
         image = new Image(new FileInputStream(file));
         imageView.setImage(image);
         editableImageController.getEditableImage().setImagePath(file.getPath());
-        loadImage(image);
-
+        loadImage(file);
     }
-    public void loadImage(Image image){
+    public void loadImage(File file) throws FileNotFoundException {
+
         imageHolder.getChildren().clear();
-        this.image = image;
+        texts.clear();
+        editableImageController.getEditableImage().getTexts().clear();
+//        editableImageController.getEditableImage().setImagePath();
+        this.image = new Image(new FileInputStream(file));
+        editableImageController.getEditableImage().setImagePath(file.getPath());
         imageView.setImage(image);
         initializeImageViewProperties(imageView);
         scale = imageView.getFitWidth() / imageView.getImage().getWidth();
@@ -106,6 +110,7 @@ public class EditableImageView {
     }
     public void loadProject() throws FileNotFoundException {
         imageHolder.getChildren().clear();
+        texts.clear();
 
         this.image = new Image(new FileInputStream(new File(editableImageController.getEditableImage().getImagePath())));
 
@@ -153,28 +158,30 @@ public class EditableImageView {
         sizeField.setText("12.0");
 
         mode = 1;
-        modeLabel.setText("Mode: View");
         // Khởi tạo các thuộc tính còn lại
         texts = new EditableTextList();
         editableImageController = new EditableImageController(this);
 
         imageView = new ImageView();
 
+        centerPane.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                alignBox.heightProperty().add(centerPane.heightProperty());
+                System.out.println(alignBox.getHeight() + " " + alignBox.getWidth());
+            }
+        });
+        centerPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                alignBox.widthProperty().add(centerPane.widthProperty());
+                System.out.println(alignBox.getHeight() + " " + alignBox.getWidth());
+            }
+        });
     }
-
     @FXML
-    void setOnChangeModeButtton(ActionEvent event) {
-        if (mode == NORMAL) {
-            setMode(ADD);
-            modeLabel.setText("Mode: Add");
-        } else if (mode == ADD) {
-            setMode(EDIT);
-            modeLabel.setText("Mode: Edit");
-        } else if (mode == EDIT) {
-            setMode(NORMAL);
-            modeLabel.setText("Mode: View");
-            currentText = null;
-        }
+    public void setOnAddTextButton(){
+        setMode(ADD);
     }
 
     @FXML
@@ -333,16 +340,7 @@ public class EditableImageView {
         loadProject();
     }
     void setMode(int mode){
-        if(mode == NORMAL){
-            this.mode = mode;
-            modeLabel.setText("Mode: Normal");
-        }else if(mode == ADD){
-            this.mode = mode;
-            modeLabel.setText("Mode: Select location");
-        }else if(mode == EDIT){
-            this.mode = mode;
-            modeLabel.setText("Mode: Edit text");
-        }
+        this.mode = mode;
     }
 
     public void setUpOnScreenTextBehavior(EditableText text){
@@ -378,8 +376,16 @@ public class EditableImageView {
 
     public void initializeImageViewProperties(ImageView imageView){
         imageView.setPreserveRatio(true);
-        imageView.setFitHeight(centerPane.getHeight());
-        imageView.setFitWidth(centerPane.getWidth());
+        double imageRatio = imageView.getImage().getHeight() / imageView.getImage().getWidth();
+        double paneRatio = centerPane.getHeight() / centerPane.getWidth();
+        if(imageRatio > paneRatio){
+            imageView.setFitHeight(centerPane.getHeight());
+            imageView.setFitWidth(centerPane.getHeight() / imageRatio);
+        }else{
+            imageView.setFitWidth(centerPane.getWidth());
+            imageView.setFitHeight(centerPane.getWidth() * imageRatio);
+        }
+
     }
     @FXML
     void setOnDecreaseImageHolderSize(ActionEvent event) {

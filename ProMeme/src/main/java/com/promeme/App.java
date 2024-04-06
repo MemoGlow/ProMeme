@@ -4,6 +4,8 @@ import com.promeme.model.EditableImage;
 import com.promeme.model.EditableText;
 import com.promeme.view.EditableImageView;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,6 +35,8 @@ public class App extends Application {
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.setScene(scene);
+        stage.setMinHeight(550);
+        stage.setMinWidth(835);
         stage.show();
 
 //        EditableImage editableImage = new EditableImage();
