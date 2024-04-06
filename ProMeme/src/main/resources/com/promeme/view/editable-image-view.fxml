@@ -40,8 +40,8 @@
                               <Insets />
                            </opaqueInsets>
                         </TextField>
-                        <Button mnemonicParsing="false" onAction="#setOnIncreaseSizeButton" prefHeight="26.0" prefWidth="62.0" text="+" />
-                        <Button mnemonicParsing="false" onAction="#setOnDecreaseSizeButton" prefHeight="26.0" prefWidth="60.0" text="-" />
+                        <Button mnemonicParsing="false" onAction="#setOnIncreaseFontSizeButton" prefHeight="26.0" prefWidth="62.0" text="+" />
+                        <Button mnemonicParsing="false" onAction="#setOnDecreaseFontSizeButton" prefHeight="26.0" prefWidth="60.0" text="-" />
                      </children>
                      <opaqueInsets>
                         <Insets left="15.0" />
@@ -83,8 +83,8 @@
          <bottom>
             <HBox prefHeight="25.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" />
+                  <Button mnemonicParsing="false" onAction="#setOnIncreaseImageHolderSize" prefHeight="25.0" prefWidth="25.0" text="+" />
+                  <Button mnemonicParsing="false" onAction="#setOnDecreaseImageHolderSize" prefHeight="25.0" prefWidth="25.0" text="-" />
                   <TextField fx:id="scaleField" prefHeight="26.0" prefWidth="96.0" />
                   <Button mnemonicParsing="false" onAction="#setOnFitButton" prefHeight="25.0" prefWidth="25.0" text="=" />
                </children>
@@ -93,7 +93,11 @@
          <center>
             <ScrollPane fx:id="centerPane" prefHeight="394.0" prefWidth="283.0" BorderPane.alignment="CENTER">
               <content>
-                <AnchorPane fx:id="imageHolder" onMouseClicked="#setOnImageHolderClicked" />
+                  <HBox alignment="CENTER">
+                     <children>
+                      <AnchorPane fx:id="imageHolder" onMouseClicked="#setOnImageHolderClicked" />
+                     </children>
+                  </HBox>
               </content>
                <BorderPane.margin>
                   <Insets bottom="10.0" left="18.0" top="10.0" />

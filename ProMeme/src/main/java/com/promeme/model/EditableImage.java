@@ -11,10 +11,10 @@ import java.util.ArrayList;
 
 public class EditableImage implements Serializable {
     private String imagePath;
-    private ArrayList<EditableText> texts;
+    private EditableTextList texts;
 
     public EditableImage(){
-        texts = new ArrayList<EditableText>();
+        texts = new EditableTextList();
     }
     public String getImagePath() throws FileNotFoundException {
         return imagePath;
@@ -24,11 +24,11 @@ public class EditableImage implements Serializable {
         this.imagePath = imagePath;
     }
 
-    public ArrayList<EditableText> getTexts() {
+    public EditableTextList getTexts() {
         return texts;
     }
 
-    public void setTexts(ArrayList<EditableText> texts) {
+    public void setTexts(EditableTextList texts) {
         this.texts = texts;
     }
 }

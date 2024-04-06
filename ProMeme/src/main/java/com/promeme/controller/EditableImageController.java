@@ -2,18 +2,20 @@ package com.promeme.controller;
 
 import com.promeme.model.EditableImage;
 import com.promeme.model.EditableText;
+import com.promeme.model.EditableTextList;
+import com.promeme.ulti.PreviewPane;
 import com.promeme.view.EditableImageView;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class EditableImageController {
 
@@ -32,62 +34,45 @@ public class EditableImageController {
         this.editableImageView = editableImageView;
     }
 
-    public EditableImage getEditableImage() {
-        return editableImage;
-    }
-    public EditableImageController(){
-        editableImage = new EditableImage();
-    }
-
-    public void setEditableImage(EditableImage editableImage) {
-        this.editableImage = editableImage;
-    }
-
     public EditableImageController(EditableImage editableImage){
         this.editableImage = editableImage;
     }
-    public void setEditableImage(){
+    public void loadEditableImage(){
         double scale = editableImageView.getScale();
-        editableImage.setTexts(new ArrayList<EditableText>());
-        for(EditableText text : editableImageView.getTexts()){
-            EditableText editableImageText = new EditableText();
-            editableImageText.setFont(new Font(text.getFont().getFamily(), text.getFont().getSize() / scale));
-            editableImageText.setFill(text.getFill());
-            editableImageText.setX(text.getX() / scale);
-            editableImageText.setY(text.getY() / scale);
-            editableImage.getTexts().add(editableImageText);
-            editableImageText.setText(text.getText());
-            System.out.println(editableImageText);
-            System.out.println(editableImageText);
-        }
+        editableImage.setTexts(new EditableTextList());
+        editableImage.getTexts().setProperty(editableImageView.getTexts());
+        editableImage.getTexts().transformSizeByScale(1 / scale);
     }
     public void export(File file) throws IOException {
-        setEditableImage();
+        loadEditableImage();
+
         AnchorPane pane = new AnchorPane();
+        System.out.println(editableImage.getTexts().size());
         pane.getChildren().add(new ImageView(new Image(new FileInputStream(new File(editableImage.getImagePath())))));
-        System.out.println(editableImage.getImagePath());
         for(EditableText text : editableImage.getTexts()){
             pane.getChildren().add(text);
         }
-        WritableImage exportImage = pane.snapshot(null, null);
-        ImageIO.write(SwingFXUtils.fromFXImage(exportImage, null), "png", file);
+        // các label phải được load vào scene thì mới hiển thị được.
+        new Scene(pane);
+        WritableImage imageToExport = pane.snapshot(null, null);
+        ImageIO.write(SwingFXUtils.fromFXImage(imageToExport, null), "png", file);
     }
     public void openFromImage(File file) throws FileNotFoundException {
         editableImage.setImagePath(file.getPath());
     }
     public void openFromProjectFile(File file) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        System.out.println("Read object");
         editableImage = (EditableImage) ois.readObject();
-        System.out.println(editableImage.getImagePath());
-        System.out.println(editableImage.getTexts().get(0));
         ois.close();
     }
     public void saveToProjectFile(File file) throws IOException {
-        setEditableImage();
+        loadEditableImage();
         ObjectOutputStream ous = new ObjectOutputStream(new FileOutputStream(file));
         ous.writeObject(editableImage);
-        System.out.println("Write object");
         ous.close();
+    }
+
+    public EditableImage getEditableImage() {
+        return editableImage;
     }
 }
