@@ -11,9 +11,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class EditableText extends Label implements Serializable{
-    public void changeTextSize(double scale){
-        this.setFont(new Font(this.getFont().getFamily(), this.getFont().getSize() * scale));
-    }
     private void readObject(ObjectInputStream ois) throws IOException {
         this.setText(ois.readUTF());
         Font font = new Font(ois.readUTF(), ois.readDouble());
